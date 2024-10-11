@@ -84,10 +84,11 @@ fp32_to_bf16:
     
     
     srli t1, s0, 16     # t1 = s0 >> 16 
-    li t2, 0x00008000  
-    and t2, s0,t2        
-    add s0, s0, t2      
-    srli s0, s0, 16     
+    andi t1,t1,1        # t1 = t1 & 1
+    li t0,0x7FFF        # t0 = 0x7FFF
+    add t1,t1,t0        # t1 = t1 + 0x7FFF
+    add t1,t1,s0        # t1 = t1 + s0
+    srli s0,t1, 16      # s0 = t1 >> 16
     
     mv a0, s0      
     
