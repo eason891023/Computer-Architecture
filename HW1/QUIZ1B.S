@@ -24,12 +24,12 @@ main:
     la t4, test_data_count
     lw t4, 0,(t4) # t4 = total num of test data
     
-    addi t3, x0, -1 # t3 = counter of data index
+    addi s1, x0, -1 # t3 = counter of data index
     
-loop:
-    addi t3, t3, 1     # t3 += 1
+test_loop:
+    addi s1, s1, 1     # t3 += 1
     la t0, test_data   # t0 = address of test_data
-    slli t6, t3, 2     # t6 = 4 * counter
+    slli t6, s1, 2     # t6 = 4 * counter
     add t0, t0, t6     # t0 = address of test_data + 4 * counter
     lw a0, 0(t0)       # a0 = testdata
     mv t5, a0          # t5 = origin fp32 testdata
@@ -65,7 +65,7 @@ loop:
     li a7, 4           # System call code for printing a string
     ecall              # Print the string    
     
-    blt t3, t4, loop   # if counter of data index < total num of test data, go to loop
+    blt s1, t4, test_loop   # if counter of data index < total num of test data, go to loop
     
     li a7, 10          # System call code for exiting the program
     ecall  
@@ -81,14 +81,13 @@ fp32_to_bf16:
     li t2, 0x7fffffff
     and t2, s0, t2      # t2 = s & 0x7fffffff
     bgtu t2, t1, is_nan # if (s & 0x7fffffff > 0x7f800000), go to NAN
-    
-    
-    srli t1, s0, 16     # t1 = s0 >> 16 
-    andi t1,t1,1        # t1 = t1 & 1
-    li t0,0x7FFF        # t0 = 0x7FFF
-    add t1,t1,t0        # t1 = t1 + 0x7FFF
-    add t1,t1,s0        # t1 = t1 + s0
-    srli s0,t1, 16      # s0 = t1 >> 16
+     
+    srli t1, s0, 16     # t1 = s0 >> 16  (u.i >> 0x10)
+    andi t1,t1,1        # t1 = t1 & 1    ((u.i >> 0x10) & 1)
+    li t0,0x7FFF        # t0 = 0x7FFF    
+    add t1,t1,t0        # t1 = t1 + 0x7FFF (0x7fff + ((u.i >> 0x10) & 1))
+    add s0, s0, t1      # t1 = t1 + s0 (u.i + (0x7fff + ((u.i >> 0x10) & 1)))
+    srli s0,s0, 16      # s0 = t1 >> 16 (u.i + (0x7fff + ((u.i >> 0x10) & 1))) >> 0x10
     
     mv a0, s0      
     

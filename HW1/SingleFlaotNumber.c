@@ -8,7 +8,6 @@ typedef struct {
     uint16_t bits;
 } bf16_t;
 
-
 // transfer fp32 to bf16
 static inline bf16_t fp32_to_bf16(float s) {
     bf16_t h;
@@ -109,9 +108,9 @@ int main() {
 
     // Test Case 6: Small numbers
     {
-        float test6[] = {0.001f, 0.002f, 0.001f, 0.002f, 0.003f};
+        float test6[] = {0.00001f, 0.00002f, 0.00001f, 0.00002f, 0.00003f, 0.00003f, 0.00005f};
         printf("\n=== Test Case 6: Small numbers ===");
-        run_test_case(test6, 5, 0.003f);
+        run_test_case(test6, 7, 0.00005f);
     }
 
     // Test Case 7: Special cases
