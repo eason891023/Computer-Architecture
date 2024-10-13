@@ -119,7 +119,7 @@ test_loop:
     ecall
 
 findSingleNumber:
-    # 主程式用到s0, s1, s2, s3, ra
+    # main function use s0, s1, s2, s3, ra
     addi sp, sp, -20          # push stack space
     sw ra, 16(sp)             # save return address
     sw s0, 12(sp)             # save s0
@@ -168,7 +168,7 @@ fp32_to_bf16:
     sw s0, 0(sp)              # save s0
 
     mv s0, a0                 # move input (float s) to s0
-    # 將浮點數 s0 轉換為整數表示，RISC-V 中需要先處理位操作
+
     li t1, 0x7fffffff         # load 0x7fffffff to t1
     li t2, 0x7f800000         # load 0x7f800000 (FP32 INF) to t2
     and t3, s0, t1            # t3 = s0 & 0x7fffffff

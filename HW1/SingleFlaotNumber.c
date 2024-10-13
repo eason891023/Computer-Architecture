@@ -3,7 +3,6 @@
 #include <math.h>
 #include <assert.h>
 
-// 定義 bfloat16 結構
 typedef struct {
     uint16_t bits;
 } bf16_t;
